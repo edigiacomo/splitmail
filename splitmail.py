@@ -24,6 +24,10 @@ import os.path
 import mailbox
 import email.utils
 from datetime import datetime
+import logging
+
+
+logger = logging.getLogger("splitmail")
 
 
 def splitbox(boxfile, fmt, filtermsg=None, copy=True, dry_run=False):
@@ -36,9 +40,8 @@ def splitbox(boxfile, fmt, filtermsg=None, copy=True, dry_run=False):
         t = email.utils.parsedate_tz(m.get('Date'))
         h['Date'] = datetime.utcfromtimestamp(email.utils.mktime_tz(t))
         f = fmt.format(**h)
-        if dry_run:
-            print("Would add message {} to mbox {}".format(k, f))
-        else:
+        logger.info("Saving message %s in mailbox %s", k, f)
+        if not dry_run:
             outbox = mailbox.mbox(f, create=True)
             outbox.lock()
             outbox.add(m)
@@ -46,15 +49,11 @@ def splitbox(boxfile, fmt, filtermsg=None, copy=True, dry_run=False):
             outbox.close()
 
         if not copy:
-            if dry_run:
-                print("Would remove message {}".format(k))
-            else:
+            logger.info("Removing message %s", k)
+            if not dry_run:
                 box.lock()
                 box.discard(k)
                 box.unlock()
-        else:
-            if dry_run:
-                print("Would not remove message {}".format(k))
 
     box.close()
 
@@ -85,6 +84,8 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--dry-run', action='store_true', default=False)
     parser.add_argument('-D', '--date', type=parse_datetime, default=None)
     args = parser.parse_args()
+
+    logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
     if args.archive_name is None:
         args.archive_name = os.path.basename(args.mailbox)
