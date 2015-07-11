@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# splitmail.py - Simple tool to split your email
+# splitmailbox.py - Simple tool to split your mailbox
 # 
 # Copyright (C) 2015  Emanuele Di Giacomo <emanuele.digiacomo@gmail.com>
 # 

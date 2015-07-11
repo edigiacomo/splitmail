@@ -1,5 +1,5 @@
-# splitmail
-Simple tool to split your old email.
+# splitmailmox
+Simple tool to split your mailbox.
 
 You can customize the directory, prefix, name and suffix of the output mailboxes using the headers of the messages stored in your mailbox. Prefix, name and suffix are expanded by `str.format` function.
 
@@ -11,7 +11,7 @@ Prefix, name and suffix are expanded by `str.format` function. The keyword argum
 ## Examples
 
 ### Split messages by year
-    splitmail --suffix '_{Date:%Y}' mail/mbox
+    splitmailbox --suffix '_{Date:%Y}' mail/mbox
 
 Will create the mailboxes `mail/mbox_2000`, `mail/mbox_2001`, ...
 
