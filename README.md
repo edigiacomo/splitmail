@@ -1,4 +1,4 @@
-# splitmailmox
+# splitmailbox
 Simple tool to split your mailbox.
 
 You can customize the directory, prefix, name and suffix of the output mailboxes using the headers of the messages stored in your mailbox. Prefix, name and suffix are expanded by `str.format` function.
