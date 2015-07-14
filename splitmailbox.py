@@ -72,7 +72,7 @@ def create_filtermsg(untildate):
     return wrapper
 
 
-if __name__ == '__main__':
+def main():
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument('mailbox', metavar='MAILBOX')
@@ -98,3 +98,7 @@ if __name__ == '__main__':
     splitbox(args.mailbox, fmt, 
              filtermsg=create_filtermsg(args.date),
              copy=args.copy, dry_run=args.dry_run)
+
+
+if __name__ == '__main__':
+    main()
