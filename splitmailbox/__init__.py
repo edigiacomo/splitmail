@@ -83,13 +83,20 @@ def main():
     parser.add_argument('mailbox', metavar='MAILBOX')
     parser.add_argument('--version', action='version',
                         version='%(prog)s ' + __version__)
-    parser.add_argument('-o', '--output-dir', metavar='PATH', default=None)
-    parser.add_argument('-a', '--archive-name', metavar='NAME', default=None)
-    parser.add_argument('-p', '--prefix', metavar='NAME', default='')
-    parser.add_argument('-s', '--suffix', metavar='NAME', default='_{Date:%Y}')
-    parser.add_argument('-c', '--copy', action='store_true', default=False)
-    parser.add_argument('-n', '--dry-run', action='store_true', default=False)
-    parser.add_argument('-D', '--date', type=parse_datetime, default=None)
+    parser.add_argument('-o', '--output-dir', metavar='PATH', default=None,
+                        help='output directory')
+    parser.add_argument('-a', '--archive-name', metavar='NAME', default=None,
+                        help='archive name')
+    parser.add_argument('-p', '--prefix', metavar='NAME', default='',
+                        help='prefix format')
+    parser.add_argument('-s', '--suffix', metavar='NAME', default='_{Date:%Y}',
+                        help='suffix format')
+    parser.add_argument('-c', '--copy', action='store_true', default=False,
+                        help='copy instead of move mail')
+    parser.add_argument('-n', '--dry-run', action='store_true', default=False,
+                        help='dry run')
+    parser.add_argument('-D', '--date', type=parse_datetime, default=None,
+                        help='ignore mails newer than this date (%%Y-%%m-%%d)')
     args = parser.parse_args()
 
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
