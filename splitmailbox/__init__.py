@@ -26,6 +26,11 @@ import email.utils
 from datetime import datetime
 import logging
 
+import pkg_resources
+
+
+__version__ = pkg_resources.get_distribution('splitmailbox').version
+
 
 logger = logging.getLogger("splitmail")
 
@@ -76,6 +81,8 @@ def main():
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument('mailbox', metavar='MAILBOX')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s ' + __version__)
     parser.add_argument('-o', '--output-dir', metavar='PATH', default=None)
     parser.add_argument('-a', '--archive-name', metavar='NAME', default=None)
     parser.add_argument('-p', '--prefix', metavar='NAME', default='')
