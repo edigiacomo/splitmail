@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 # splitmailbox.py - Simple tool to split your mailbox
-# 
-# Copyright (C) 2015  Emanuele Di Giacomo <emanuele.digiacomo@gmail.com>
-# 
+#
+# Copyright (C) 2015,2019  Emanuele Di Giacomo <emanuele@digiacomo.cc>
+#
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
 # Foundation; either version 2 of the License, or (at your option) any later
@@ -17,8 +17,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
-# 
-# Author: Emanuele Di Giacomo <emanuele.digiacomo@gmail.com>
+#
+# Author: Emanuele Di Giacomo <emanuele@digiacomo.cc>
 
 import os.path
 import mailbox
@@ -109,7 +109,7 @@ def main():
 
     fmt = os.path.join(args.output_dir,
                        args.prefix + args.archive_name + args.suffix)
-    splitbox(args.mailbox, fmt, 
+    splitbox(args.mailbox, fmt,
              filtermsg=create_filtermsg(args.date),
              copy=args.copy, dry_run=args.dry_run)
 
