@@ -29,14 +29,17 @@ import logging
 import pkg_resources
 
 
-__version__ = pkg_resources.get_distribution('splitmailbox').version
+try:
+    __version__ = pkg_resources.get_distribution('splitmailbox').version
+except pkg_resources.DistributionNotFound:
+    __version__ = 'devel'
 
 
 logger = logging.getLogger("splitmail")
 
 
-def splitbox(boxfile, fmt, filtermsg=None, copy=True, dry_run=False):
-    box = mailbox.mbox(boxfile)
+def splitbox(mailpath, mailcls, fmt, filtermsg=None, copy=True, dry_run=False):
+    box = mailcls(mailpath)
 
     for k, m in box.iteritems():
         if filtermsg is None or not filtermsg(m):
@@ -45,16 +48,16 @@ def splitbox(boxfile, fmt, filtermsg=None, copy=True, dry_run=False):
         t = email.utils.parsedate_tz(m.get('Date'))
         h['Date'] = datetime.utcfromtimestamp(email.utils.mktime_tz(t))
         f = fmt.format(**h)
-        logger.info("Saving message %s in mailbox %s", k, f)
+        logger.info("Saving message %s (%s) in mailbox %s", k, h['Date'], f)
         if not dry_run:
-            outbox = mailbox.mbox(f, create=True)
+            outbox = mailcls(f, create=True)
             outbox.lock()
             outbox.add(m)
             outbox.unlock()
             outbox.close()
 
         if not copy:
-            logger.info("Removing message %s", k)
+            logger.info("Removing message %s (%s)", k, h['Date'])
             if not dry_run:
                 box.lock()
                 box.discard(k)
@@ -76,11 +79,16 @@ def create_filtermsg(untildate):
         return d < untildate
     return wrapper
 
+def parse_mailformat(name):
+    return {
+        "mailbox": mailbox.mbox,
+        "maildir": mailbox.Maildir,
+    }[name]
+
 
 def main():
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    parser.add_argument('mailbox', metavar='MAILBOX')
     parser.add_argument('--version', action='version',
                         version='%(prog)s ' + __version__)
     parser.add_argument('-o', '--output-dir', metavar='PATH', default=None,
@@ -96,20 +104,27 @@ def main():
     parser.add_argument('-n', '--dry-run', action='store_true', default=False,
                         help='dry run')
     parser.add_argument('-D', '--date', type=parse_datetime, default=None,
-                        help='ignore mails newer than this date (%%Y-%%m-%%d)')
+                        help=('process mails older than this date only '
+                              '(%%Y-%%m-%%d)'))
+    parser.add_argument('--mailformat', help="mail format",
+                        choices=["mailbox", "maildir"],
+                        default="maildir",
+                        type=parse_mailformat)
+    parser.add_argument('mailpath', help="mailbox/maildir path")
+
     args = parser.parse_args()
 
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
     if args.archive_name is None:
-        args.archive_name = os.path.basename(args.mailbox)
+        args.archive_name = os.path.basename(args.mailpath)
 
     if args.output_dir is None:
-        args.output_dir = os.path.dirname(args.mailbox)
+        args.output_dir = os.path.dirname(args.mailpath)
 
     fmt = os.path.join(args.output_dir,
                        args.prefix + args.archive_name + args.suffix)
-    splitbox(args.mailbox, fmt,
+    splitbox(args.mailpath, args.mailformat, fmt,
              filtermsg=create_filtermsg(args.date),
              copy=args.copy, dry_run=args.dry_run)
 
