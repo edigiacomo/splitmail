@@ -5,7 +5,7 @@ Summary:        Simple tool to split your mailbox or maildir.
 
 License:        GPLv2+
 URL:            https://github.com/edigiacomo/splitmailbox
-Source0:        https://github.com/edigiacomo/splitmailbox/archive/v%{version}.tar.gz#%{name}-%{version}.tar.gz
+Source0:        https://github.com/edigiacomo/splitmailbox/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 BuildRequires:  python3-devel
